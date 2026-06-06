@@ -100,33 +100,36 @@ export const packagingHighlights = [
 ];
 
 export const dishes = [
-  { name: "Wok de pollo", image: "/images/menu/wok-de-pollo.png" },
+  { name: "Wok de pollo", image: "/images/menu/wok-de-pollo.webp" },
   {
     name: "Carne con vegetales",
-    image: "/images/menu/carne-con-vegetales.png",
+    image: "/images/menu/carne-con-vegetales.webp",
   },
   {
     name: "Pollo a la portuguesa",
-    image: "/images/menu/pollo-a-la-portuguesa.png",
+    image: "/images/menu/pollo-a-la-portuguesa.webp",
   },
-  { name: "Pastel de papa", image: "/images/menu/pastel-de-papa.png" },
-  { name: "Tarta de verduras", image: "/images/menu/tarta-de-verduras.png" },
+  { name: "Pastel de papa", image: "/images/menu/pastel-de-papa.webp" },
+  { name: "Tarta de verduras", image: "/images/menu/tarta-de-verduras.webp" },
   {
     name: "Hamburguesas vegetales",
-    image: "/images/menu/hamburguesas-vegetales.png",
+    image: "/images/menu/hamburguesas-vegetales.webp",
   },
   {
     name: "Medallones de merluza",
-    image: "/images/menu/medallones-de-merluza.png",
+    image: "/images/menu/medallones-de-merluza.webp",
   },
-  { name: "Canelones", image: "/images/menu/canelones.png" },
+  { name: "Canelones", image: "/images/menu/canelones.webp" },
 ];
 
 export const packages = [
   {
     title: "Pack 5",
     description: "Ideal para resolver tus almuerzos laborales sin complicarte.",
-    image: "/images/packs/pack-5-price.png",
+    image: "/images/packs/pack-5-price.webp",
+    price: "$39.000",
+    unitPrice: "$7.800 por vianda",
+    savings: "Ahorro frente a delivery diario",
     bullets: [
       "Ideal para empezar",
       "Selección personalizada",
@@ -138,7 +141,10 @@ export const packages = [
     title: "Pack 10",
     description:
       "La opción más conveniente para ganar más organización, más ahorro y más tranquilidad.",
-    image: "/images/packs/pack-10-price.png",
+    image: "/images/packs/pack-10-price.webp",
+    price: "$72.000",
+    unitPrice: "$7.200 por vianda",
+    savings: "Mejor costo por vianda",
     bullets: [
       "Mejor relación precio/cantidad",
       "Mayor organización semanal",
@@ -152,28 +158,28 @@ export const testimonials = [
   {
     name: "María, profesional",
     role: "Profesional",
-    image: "/images/testimonials/profesional.png",
+    image: "/images/testimonials/profesional.webp",
     quote:
       "Me resolvió la semana. Dejar de improvisar me ordenó también la rutina.",
   },
   {
     name: "Julián, bancario",
     role: "Empleado bancario",
-    image: "/images/testimonials/bancario.png",
+    image: "/images/testimonials/bancario.webp",
     quote:
       "Dejé de preocuparme por cocinar y empecé a llegar a casa con la comida resuelta.",
   },
   {
     name: "Sofía, emprendedora",
     role: "Emprendedora",
-    image: "/images/testimonials/emprendedor.png",
+    image: "/images/testimonials/emprendedor.webp",
     quote:
       "Comer bien es mucho más fácil cuando alguien organiza todo por vos.",
   },
   {
     name: "Carla, madre trabajadora",
     role: "Madre trabajadora",
-    image: "/images/testimonials/madre-trabajadora.png",
+    image: "/images/testimonials/madre-trabajadora.webp",
     quote:
       "Tener viandas listas me cambió la semana. Gané tiempo y bajé el estrés.",
   },
