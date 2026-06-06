@@ -1,0 +1,12 @@
+:{$PORT:8080} {
+	root * ./dist
+	encode gzip zstd
+	file_server
+
+	# Redirige todas las rutas SPA a index.html (excepto archivos que existen)
+	@spa {
+		not file
+		not path *.json *.xml *.png *.jpg *.jpeg *.gif *.svg *.css *.js *.woff *.woff2 *.ttf *.eot *.map
+	}
+	rewrite @spa /index.html
+}

@@ -1,0 +1,319 @@
+/* src/components/PedidoCard.css */
+
+.card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+/* ================= HEADER ================= */
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTime {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.cardName {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+/* ================= BADGES ================= */
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.badge.delivery {
+  background: linear-gradient(135deg, #ecfdf5 0%, #dcfce7 100%);
+  color: #166534;
+  border-color: rgba(22, 101, 52, 0.15);
+}
+
+.badge.retiro {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1e40af;
+  border-color: rgba(30, 64, 175, 0.15);
+}
+
+/* ================= STATUS SECTION ================= */
+
+.statusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.statusDisplay {
+  display: flex;
+  justify-content: center;
+}
+
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+}
+
+.status-pendiente {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.status-preparado {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border-color: #3b82f6;
+}
+
+.primaryAction {
+  width: 100%;
+}
+
+/* ================= BOTONES ================= */
+
+.btnPrimary {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 2px solid;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btnPrimary:active {
+  transform: translateY(0);
+}
+
+/* ================= BODY ================= */
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dataSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dataRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dataLabel {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+.dataValue {
+  font-size: 14px;
+  color: #374151;
+}
+
+.dataValue.mono {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-weight: 500;
+}
+
+/* ================= PRODUCTS ================= */
+
+.productsSection {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.productsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.productItem {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+  padding: 4px 0;
+  border-left: 3px solid #e5e7eb;
+  padding-left: 8px;
+}
+
+.productItem strong {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ================= SECONDARY ACTIONS ================= */
+
+.secondaryActions {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 8px;
+}
+
+.btnSecondary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.btnSecondary:active {
+  transform: translateY(0);
+}
+
+.btnSecondary.disabled {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.6;
+  color: #9ca3af;
+}
+
+/* WhatsApp button - green */
+.btnSecondary:nth-child(2) {
+  background: #25d366;
+  color: white;
+  border-color: #25d366;
+}
+
+.btnSecondary:nth-child(2):hover:not(.disabled) {
+  background: #128c7e;
+  border-color: #128c7e;
+}
+
+/* Print button - neutral gray */
+.btnSecondary:nth-child(1) {
+  background: #6b7280;
+  color: white;
+  border-color: #6b7280;
+}
+
+.btnSecondary:nth-child(1):hover:not(.disabled) {
+  background: #4b5563;
+  border-color: #4b5563;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px) {
+  .card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .headerMain {
+    width: 100%;
+  }
+
+  .badge {
+    align-self: flex-end;
+  }
+
+  .statusSection {
+    padding: 10px;
+  }
+
+  .btnPrimary {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .secondaryActions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btnSecondary {
+    padding: 12px 14px;
+  }
+
+  .productsList {
+    max-height: 100px;
+  }
+}

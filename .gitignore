@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# App outputs
+apps/*/dist/
+apps/*/node_modules/
+packages/*/node_modules/

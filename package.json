@@ -1,0 +1,36 @@
+{
+  "name": "la-quinta-system",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev:api": "npm run dev --workspace @laquinta/api",
+    "start:api": "npm run start --workspace @laquinta/api",
+    "build:api": "npm run build --workspace @laquinta/api",
+    "dev:web-administracion": "npm run dev --workspace @laquinta/web-administracion",
+    "start:web-administracion": "npm run start --workspace @laquinta/web-administracion",
+    "build:web-administracion": "npm run build --workspace @laquinta/web-administracion",
+    "dev:web-central": "npm run dev --workspace @laquinta/web-central",
+    "start:web-central": "npm run start --workspace @laquinta/web-central",
+    "build:web-central": "npm run build --workspace @laquinta/web-central",
+    "dev:web-pedidos-la-quinta": "npm run dev --workspace @laquinta/web-pedidos-la-quinta",
+    "start:web-pedidos-la-quinta": "npm run start --workspace @laquinta/web-pedidos-la-quinta",
+    "build:web-pedidos-la-quinta": "npm run build --workspace @laquinta/web-pedidos-la-quinta",
+    "dev:web-la-quinta": "npm run dev --workspace @laquinta/web-la-quinta",
+    "start:web-la-quinta": "npm run start --workspace @laquinta/web-la-quinta",
+    "build:web-la-quinta": "npm run build --workspace @laquinta/web-la-quinta",
+    "dev:web-fit-and-fresh": "npm run dev --workspace @laquinta/web-fit-and-fresh",
+    "start:web-fit-and-fresh": "npm run start --workspace @laquinta/web-fit-and-fresh",
+    "build:web-fit-and-fresh": "npm run build --workspace @laquinta/web-fit-and-fresh",
+    "dev:all": "concurrently -k -n api,web-admin,web-central,web-pedidos,web-laquinta,fitfresh \"npm:dev:api\" \"npm:dev:web-administracion\" \"npm:dev:web-central\" \"npm:dev:web-pedidos-la-quinta\" \"npm:dev:web-la-quinta\" \"npm:dev:web-fit-and-fresh\"",
+    "start:all": "concurrently -k -n api,web-admin,web-central,web-pedidos,web-laquinta,fitfresh \"npm:start:api\" \"npm:start:web-administracion\" \"npm:start:web-central\" \"npm:start:web-pedidos-la-quinta\" \"npm:start:web-la-quinta\" \"npm:start:web-fit-and-fresh\"",
+    "build": "npm run build:api && npm run build:web-administracion && npm run build:web-central && npm run build:web-pedidos-la-quinta && npm run build:web-la-quinta && npm run build:web-fit-and-fresh"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
