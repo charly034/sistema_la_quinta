@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap");
 
 :root {
   color: #1f1f1f;
   background:
     radial-gradient(circle at top, rgba(168, 200, 159, 0.26), transparent 34%),
     linear-gradient(180deg, #f7f4ee 0%, #fbfaf7 48%, #f1f4ee 100%);
-  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  font-family: Manrope, "Segoe UI", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -147,7 +147,7 @@ a {
   letter-spacing: 0.18em;
   font-size: 0.76rem;
   font-weight: 700;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .hero h1,
@@ -156,7 +156,7 @@ a {
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.02;
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: Fraunces, Georgia, serif;
 }
 
 .hero h1 {
@@ -187,6 +187,13 @@ a {
   max-width: 60ch;
   margin: 16px 0 0;
   font-size: 1.03rem;
+}
+
+.hero__emotion {
+  margin: 14px 0 0;
+  color: #355c3a;
+  font-size: 0.98rem;
+  font-weight: 700;
 }
 
 .hero__cta {
@@ -259,7 +266,7 @@ a {
   background: rgba(93, 142, 90, 0.08);
   color: #496b47;
   font-size: 0.9rem;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .hero__stats {
@@ -361,7 +368,7 @@ a {
   margin: 0;
   color: #4c4c4c;
   font-size: 0.88rem;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .hero-visual__card {
@@ -377,7 +384,7 @@ a {
 
 .hero-visual__card strong {
   color: #1f1f1f;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .hero-visual__card span {
@@ -439,9 +446,14 @@ a {
   width: 52px;
   height: 52px;
   margin-bottom: 14px;
-  border-radius: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(93, 142, 90, 0.22);
   background: rgba(93, 142, 90, 0.1);
-  font-size: 1.35rem;
+  color: #355c3a;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .feature-card h3,
@@ -513,7 +525,7 @@ a {
   letter-spacing: 0.16em;
   font-size: 0.74rem;
   font-weight: 700;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .solution-panel ul {
@@ -554,7 +566,7 @@ a {
   color: #1f1f1f;
   font-size: 1.52rem;
   line-height: 1;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .package-card__unit-price {
@@ -588,7 +600,7 @@ a {
   color: #476d45;
   font-size: 0.82rem;
   font-weight: 700;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .package-card ul {
@@ -726,13 +738,13 @@ a {
   color: #1f1f1f;
   font-size: 0.98rem;
   line-height: 1.2;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .menu-card h3,
 .testimonial-card strong {
   font-size: 1.08rem;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .storage-list {
@@ -753,7 +765,105 @@ a {
 
 .storage-list strong {
   color: #20402d;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
+}
+
+.guideline-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.ads-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.ads-card {
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(93, 142, 90, 0.14);
+  background: linear-gradient(
+    180deg,
+    rgba(247, 244, 238, 0.8),
+    rgba(255, 255, 255, 0.88)
+  );
+  box-shadow: 0 18px 50px rgba(29, 62, 38, 0.08);
+}
+
+.ads-card h3 {
+  margin: 8px 0 0;
+  color: #203627;
+  font-family: Sora, Manrope, sans-serif;
+}
+
+.ads-card p {
+  margin: 10px 0 0;
+  color: #4e5850;
+}
+
+.ads-card .button {
+  margin-top: 16px;
+}
+
+.ads-card__objective {
+  margin: 0;
+  color: #355c3a;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-family: Sora, Manrope, sans-serif;
+}
+
+.guideline-card,
+.realism-rule,
+.prompt-master {
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(93, 142, 90, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 50px rgba(29, 62, 38, 0.08);
+}
+
+.guideline-card--alert {
+  border-color: rgba(168, 100, 66, 0.24);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 249, 244, 0.95) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+}
+
+.guideline-card h3,
+.realism-rule h3,
+.prompt-master h3 {
+  margin: 0;
+  color: #203627;
+  font-family: Sora, Manrope, sans-serif;
+}
+
+.guideline-card ul {
+  margin: 16px 0 0;
+  padding-left: 20px;
+}
+
+.guideline-card li {
+  margin: 10px 0;
+  color: #4e5850;
+}
+
+.realism-rule p {
+  margin: 12px 0 0;
+  color: #505c53;
+}
+
+.prompt-master p {
+  margin: 0;
+  color: #49544b;
+  white-space: normal;
+  line-height: 1.62;
 }
 
 .storage-list span {
@@ -897,7 +1007,7 @@ a {
   display: block;
   margin-bottom: 8px;
   color: #223729;
-  font-family: Poppins, Inter, sans-serif;
+  font-family: Sora, Manrope, sans-serif;
 }
 
 .sticky-wa {
@@ -999,6 +1109,14 @@ a {
 
   .pack-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .guideline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ads-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .menu-grid {

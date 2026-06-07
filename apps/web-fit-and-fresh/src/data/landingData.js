@@ -92,7 +92,7 @@ export const menuHighlights = [
 ];
 
 export const packagingHighlights = [
-  "Bolsa kraft con presencia premium.",
+  "Bolsa kraft funcional, resistente y autentica.",
   "Etiquetas simples, claras y legibles.",
   "Packaging apto freezer y microondas.",
   "Hasta 72 horas en heladera.",

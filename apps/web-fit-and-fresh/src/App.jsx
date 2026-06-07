@@ -1,17 +1,10 @@
-import {
-  brandValues,
-  faqs,
-  menuHighlights,
-  packages,
-} from "./data/landingData.js";
+import { faqs, packages } from "./data/landingData.js";
 import { Button } from "./components/Button.jsx";
 import { SectionHeading } from "./components/SectionHeading.jsx";
-import { FeatureCard } from "./components/FeatureCard.jsx";
 import { PackageCard } from "./components/PackageCard.jsx";
 import { FaqItem } from "./components/FaqItem.jsx";
 import { HeroVisual } from "./components/HeroVisual.jsx";
 
-const benefitIcons = ["⏱", "🍲", "🗓", "🥕", "❄️", "🚚"];
 const WHATSAPP_NUMBER = "5492615716433";
 
 const createWhatsAppLink = (message) =>
@@ -36,7 +29,6 @@ export default function App() {
         </a>
 
         <nav className="topnav" aria-label="Navegación principal">
-          <a href="#beneficios">Beneficios</a>
           <a href="#packs">Packs</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -54,10 +46,10 @@ export default function App() {
       <section className="hero section" id="inicio">
         <div className="hero__content">
           <span className="eyebrow">Fit & Fresh · Mendoza, Argentina</span>
-          <h1>RESOLVÉ TUS ALMUERZOS DE LA SEMANA EN 2 MINUTOS.</h1>
+          <h1>Comida casera lista para tu semana.</h1>
           <p className="hero__lead">
-            Elegís pack, elegís platos y listo. Comida casera lista para
-            calentar, sin suscripción y con entrega semanal.
+            Elegi Pack 5 o Pack 10 viandas y resolve tus almuerzos sin cocinar
+            todos los dias.
           </p>
 
           <div className="hero__cta">
@@ -77,13 +69,7 @@ export default function App() {
           <div className="hero__microtrust" aria-label="Condiciones de compra">
             <span>Entrega semanal</span>
             <span>Pago simple</span>
-            <span>Sin suscripción</span>
-          </div>
-
-          <div className="hero__trust" aria-label="Mensajes clave de la marca">
-            {brandValues.map((value) => (
-              <span key={value}>{value}</span>
-            ))}
+            <span>Porciones abundantes</span>
           </div>
 
           <div className="hero__stats" aria-label="Datos destacados">
@@ -92,12 +78,12 @@ export default function App() {
               <span>viandas por pack</span>
             </div>
             <div>
-              <strong>450 g</strong>
-              <span>aprox. por vianda</span>
-            </div>
-            <div>
               <strong>72 h</strong>
               <span>en heladera</span>
+            </div>
+            <div>
+              <strong>3 meses</strong>
+              <span>apto freezer</span>
             </div>
           </div>
         </div>
@@ -105,34 +91,15 @@ export default function App() {
         <HeroVisual />
       </section>
 
-      <section className="section" id="beneficios">
-        <SectionHeading
-          eyebrow="Beneficios"
-          title="Resolvé tu semana en menos tiempo"
-          intro="Lo esencial para comer mejor sin cocinar todos los días."
-        />
-
-        <div className="benefit-grid">
-          {menuHighlights.slice(0, 4).map((benefit, index) => (
-            <FeatureCard
-              key={benefit.title}
-              icon={benefitIcons[index]}
-              title={benefit.title}
-              description={benefit.description}
-            />
-          ))}
-        </div>
-      </section>
-
       <section className="section" id="packs">
         <SectionHeading
           eyebrow="Packs"
-          title="Elegí tu pack y cerrá por WhatsApp"
-          intro="Precio claro, costo por vianda y opción recomendada para ahorrar más en la semana."
+          title="Dos opciones simples para vender"
+          intro="Pack semanal de 5 viandas o pack de 10 viandas para mejor costo por unidad."
         />
 
         <div className="pack-grid">
-          {packages.map((pack) => (
+          {packages.slice(0, 2).map((pack) => (
             <PackageCard
               key={pack.title}
               {...pack}
@@ -140,7 +107,7 @@ export default function App() {
               ctaHref={createWhatsAppLink(
                 `Hola! Quiero pedir el ${pack.title} (${pack.price}). ¿Cómo coordinamos entrega y pago?`,
               )}
-              ctaLabel={`Pedir ${pack.title}`}
+              ctaLabel={`Reservar ${pack.title}`}
             />
           ))}
         </div>
@@ -148,7 +115,8 @@ export default function App() {
         <div className="purchase-notes" aria-label="Garantías de compra">
           <span>Atención directa por WhatsApp</span>
           <span>Entrega o retiro coordinado</span>
-          <span>Opciones vegetarianas disponibles</span>
+          <span>Pack 5 o Pack 10</span>
+          <span>Sin suscripcion</span>
         </div>
       </section>
 
@@ -156,11 +124,11 @@ export default function App() {
         <SectionHeading
           eyebrow="Preguntas frecuentes"
           title="Dudas clave antes de pedir"
-          intro="Todo lo importante, sin vueltas."
+          intro="Informacion basica para decidir rapido."
         />
 
         <div className="faq-list">
-          {faqs.slice(0, 4).map((faq) => (
+          {faqs.slice(0, 3).map((faq) => (
             <FaqItem key={faq.question} {...faq} />
           ))}
         </div>
@@ -168,8 +136,8 @@ export default function App() {
 
       <section className="section cta-final">
         <span className="eyebrow">Último paso</span>
-        <h2>Pedí tu pack y resolvé la semana</h2>
-        <p>Sin vueltas: escribinos y te ayudamos a elegir la mejor opción.</p>
+        <h2>Pedí tu pack hoy</h2>
+        <p>Te asesoramos por WhatsApp y coordinamos entrega o retiro.</p>
         <div className="hero__cta hero__cta--center">
           <Button
             href={createWhatsAppLink(
