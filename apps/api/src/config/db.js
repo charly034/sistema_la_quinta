@@ -17,7 +17,31 @@ function esHostLocal(host) {
 
 export function crearConfiguracionDb() {
   const databaseUrlPruebas = process.env.DATABASE_URL_PRUEBAS || "";
-  const databaseUrl = databaseUrlPruebas || process.env.DATABASE_URL || "";
+  const nodeEnv = (process.env.NODE_ENV || "").toLowerCase();
+
+  if (nodeEnv === "test") {
+    if (!databaseUrlPruebas) {
+      throw new Error(
+        "DATABASE_URL_PRUEBAS es obligatoria en entorno de pruebas",
+      );
+    }
+
+    return {
+      usarRemota: true,
+      config: {
+        connectionString: databaseUrlPruebas,
+        host: undefined,
+        port: undefined,
+        database: undefined,
+        user: undefined,
+        password: undefined,
+        ssl: false,
+      },
+    };
+  }
+
+  // En producción/desarrollo solo se usa DATABASE_URL, nunca DATABASE_URL_PRUEBAS.
+  const databaseUrl = process.env.DATABASE_URL || "";
   const forzarLocal = esValorVerdadero(process.env.DB_FORCE_LOCAL);
   const forzarRemota = esValorVerdadero(process.env.DB_FORCE_REMOTE);
   const tieneDatabaseUrl = !!databaseUrl;

@@ -19,8 +19,66 @@ export function cargarDatabaseUrlPruebas() {
   return match[1].trim().replace(/^['\"]|['\"]$/g, "");
 }
 
+function obtenerNombreBaseDesdeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const dbName = String(parsed.pathname || "")
+      .replace(/^\//, "")
+      .trim();
+    return {
+      dbName,
+      host: String(parsed.hostname || "").toLowerCase(),
+    };
+  } catch {
+    return { dbName: "", host: "" };
+  }
+}
+
+export function validarDatabaseUrlPruebasSegura(url) {
+  if (!url) {
+    throw new Error("DATABASE_URL_PRUEBAS es obligatoria para integraciones");
+  }
+
+  const { dbName, host } = obtenerNombreBaseDesdeUrl(url);
+  const nombreLower = String(dbName || "").toLowerCase();
+  const hostLower = String(host || "").toLowerCase();
+
+  const patronesPermitidos = ["prueba", "pruebas", "test", "testing", "qa"];
+  const nombreValido = patronesPermitidos.some((p) => nombreLower.includes(p));
+  if (!nombreValido) {
+    throw new Error(
+      "DATABASE_URL_PRUEBAS no parece base de pruebas (nombre sin prueba/test/qa)",
+    );
+  }
+
+  const patronesProduccion = [
+    "prod",
+    "production",
+    "live",
+    "primary",
+    "master",
+    "rds.amazonaws.com",
+    "azure.com",
+  ];
+  const pareceProd = patronesProduccion.some(
+    (p) => hostLower.includes(p) || nombreLower.includes(p),
+  );
+  if (pareceProd) {
+    throw new Error(
+      "DATABASE_URL_PRUEBAS rechazada por política anti-producción",
+    );
+  }
+
+  return {
+    base: dbName,
+    anti_produccion: "APROBADA",
+  };
+}
+
 export function prepararEntornoPruebas(etiqueta = "etapa3g") {
-  process.env.DATABASE_URL_PRUEBAS = cargarDatabaseUrlPruebas();
+  const dbPruebas = cargarDatabaseUrlPruebas();
+  validarDatabaseUrlPruebasSegura(dbPruebas);
+  process.env.DATABASE_URL_PRUEBAS = dbPruebas;
   process.env.JWT_SECRETO_ACCESO = `${etiqueta}-${randomUUID()}`;
   process.env.NODE_ENV = "test";
 

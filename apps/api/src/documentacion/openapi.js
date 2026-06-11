@@ -16,6 +16,18 @@ const options = {
         description: "Catalogos de clasificaciones de platos",
       },
       {
+        name: "ReglasMenu",
+        description: "Reglas configurables para propuestas automáticas",
+      },
+      {
+        name: "PerfilesReglas",
+        description: "Perfiles de aplicación y ponderación de reglas",
+      },
+      {
+        name: "PropuestasMenu",
+        description: "Generación, revisión y aplicación de propuestas de menú",
+      },
+      {
         name: "MenusSemanales",
         description:
           "Gestión de menús semanales, versiones, exportación e importación",
@@ -504,6 +516,158 @@ const options = {
           responses: { 200: { description: "Historial de uso" } },
         },
       },
+      "/menu/reglas": {
+        get: {
+          tags: ["ReglasMenu"],
+          summary: "Listar reglas",
+          responses: { 200: { description: "Listado de reglas" } },
+        },
+        post: {
+          tags: ["ReglasMenu"],
+          summary: "Crear regla",
+          responses: { 201: { description: "Regla creada" } },
+        },
+      },
+      "/menu/reglas/{id}": {
+        get: {
+          tags: ["ReglasMenu"],
+          summary: "Obtener regla por id",
+          responses: {
+            200: { description: "Regla" },
+            404: { description: "No encontrada" },
+          },
+        },
+        patch: {
+          tags: ["ReglasMenu"],
+          summary: "Actualizar regla",
+          responses: { 200: { description: "Regla actualizada" } },
+        },
+      },
+      "/menu/reglas/{id}/estado": {
+        patch: {
+          tags: ["ReglasMenu"],
+          summary: "Cambiar estado de regla",
+          responses: { 200: { description: "Estado actualizado" } },
+        },
+      },
+      "/menu/reglas/{id}/duplicar": {
+        post: {
+          tags: ["ReglasMenu"],
+          summary: "Duplicar regla",
+          responses: { 201: { description: "Regla duplicada" } },
+        },
+      },
+      "/menu/reglas/evaluar": {
+        post: {
+          tags: ["ReglasMenu"],
+          summary: "Evaluar regla o perfil en contexto",
+          responses: { 200: { description: "Evaluación de contexto" } },
+        },
+      },
+      "/menu/perfiles-reglas": {
+        get: {
+          tags: ["PerfilesReglas"],
+          summary: "Listar perfiles",
+          responses: { 200: { description: "Listado de perfiles" } },
+        },
+        post: {
+          tags: ["PerfilesReglas"],
+          summary: "Crear perfil",
+          responses: { 201: { description: "Perfil creado" } },
+        },
+      },
+      "/menu/perfiles-reglas/{id}": {
+        get: {
+          tags: ["PerfilesReglas"],
+          summary: "Obtener perfil",
+          responses: {
+            200: { description: "Perfil" },
+            404: { description: "No encontrado" },
+          },
+        },
+        patch: {
+          tags: ["PerfilesReglas"],
+          summary: "Actualizar perfil",
+          responses: { 200: { description: "Perfil actualizado" } },
+        },
+      },
+      "/menu/perfiles-reglas/{id}/estado": {
+        patch: {
+          tags: ["PerfilesReglas"],
+          summary: "Cambiar estado de perfil",
+          responses: { 200: { description: "Estado actualizado" } },
+        },
+      },
+      "/menu/perfiles-reglas/{id}/reglas": {
+        put: {
+          tags: ["PerfilesReglas"],
+          summary: "Reemplazar reglas de perfil",
+          responses: { 200: { description: "Reglas reemplazadas" } },
+        },
+      },
+      "/menu/perfiles-reglas/{id}/duplicar": {
+        post: {
+          tags: ["PerfilesReglas"],
+          summary: "Duplicar perfil",
+          responses: { 201: { description: "Perfil duplicado" } },
+        },
+      },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas": {
+        get: {
+          tags: ["PropuestasMenu"],
+          summary: "Listar propuestas generadas para una versión",
+          responses: { 200: { description: "Propuestas listadas" } },
+        },
+      },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/generar": {
+        post: {
+          tags: ["PropuestasMenu"],
+          summary: "Generar propuestas base por perfiles iniciales",
+          responses: { 201: { description: "Propuestas generadas" } },
+        },
+      },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/generar-personalizada":
+        {
+          post: {
+            tags: ["PropuestasMenu"],
+            summary: "Generar propuesta personalizada por perfil",
+            responses: { 201: { description: "Propuesta generada" } },
+          },
+        },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/{propuestaId}": {
+        get: {
+          tags: ["PropuestasMenu"],
+          summary: "Obtener detalle de propuesta",
+          responses: {
+            200: { description: "Detalle de propuesta" },
+            404: { description: "No encontrada" },
+          },
+        },
+      },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/{propuestaId}/aprobar":
+        {
+          post: {
+            tags: ["PropuestasMenu"],
+            summary: "Aprobar propuesta",
+            responses: { 200: { description: "Propuesta aprobada" } },
+          },
+        },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/{propuestaId}/descartar":
+        {
+          post: {
+            tags: ["PropuestasMenu"],
+            summary: "Descartar propuesta",
+            responses: { 200: { description: "Propuesta descartada" } },
+          },
+        },
+      "/menu/semanas/{id}/versiones/{versionId}/propuestas/{propuestaId}/aplicar":
+        {
+          post: {
+            tags: ["PropuestasMenu"],
+            summary: "Aplicar propuesta a opciones de la versión",
+            responses: { 200: { description: "Propuesta aplicada" } },
+          },
+        },
     },
     security: [{ BearerAuth: [] }],
   },

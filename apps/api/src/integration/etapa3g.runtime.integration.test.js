@@ -1,5 +1,6 @@
 import { beforeAll, afterAll, describe, expect, test } from "@jest/globals";
 import ExcelJS from "exceljs";
+import { randomUUID } from "node:crypto";
 import {
   bootstrapApi,
   login,
@@ -59,15 +60,22 @@ describe("Etapa 3G - Runtime reproducible permanente", () => {
       semanaIndex: 2,
     });
 
+    const sufijoRoles = `runtime-${randomUUID().slice(0, 8)}`;
+
     roles = {
-      CLIENTE: await crearUsuarioConRol(api, owner.token, "CLIENTE", "runtime"),
-      LECTOR: await crearUsuarioConRol(api, owner.token, "LECTOR", "runtime"),
-      EDITOR: await crearUsuarioConRol(api, owner.token, "EDITOR", "runtime"),
+      CLIENTE: await crearUsuarioConRol(
+        api,
+        owner.token,
+        "CLIENTE",
+        sufijoRoles,
+      ),
+      LECTOR: await crearUsuarioConRol(api, owner.token, "LECTOR", sufijoRoles),
+      EDITOR: await crearUsuarioConRol(api, owner.token, "EDITOR", sufijoRoles),
       ADMINISTRADOR: await crearUsuarioConRol(
         api,
         owner.token,
         "ADMINISTRADOR",
-        "runtime",
+        sufijoRoles,
       ),
     };
   }, 240000);

@@ -11,6 +11,9 @@ import empresasRoutes from "../modules/empresas/empresas.rutas.js";
 import opcionesMenuRoutes from "../modules/menu/opciones-menu/opciones-menu.rutas.js";
 import platosRoutes from "../modules/menu/platos/platos.rutas.js";
 import menusSemanalesRoutes from "../modules/menu/menus-semanales/menus-semanales.rutas.js";
+import reglasRoutes from "../modules/menu/reglas/reglas.rutas.js";
+import perfilesReglasRoutes from "../modules/menu/perfiles-reglas/perfiles-reglas.rutas.js";
+import propuestasRoutes from "../modules/menu/propuestas/propuestas.rutas.js";
 
 const router = Router();
 
@@ -26,5 +29,8 @@ router.use(empresasRoutes);
 router.use(opcionesMenuRoutes);
 router.use(platosRoutes);
 router.use(menusSemanalesRoutes);
+router.use(reglasRoutes);
+router.use(perfilesReglasRoutes);
+router.use(propuestasRoutes);
 
 export default router;

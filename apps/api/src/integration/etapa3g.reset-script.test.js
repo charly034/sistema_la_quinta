@@ -21,6 +21,8 @@ describe("Etapa 3G - Protección script reset-db-pruebas", () => {
       DATABASE_URL_PRUEBAS: dbUrl,
     };
     delete env.DATABASE_URL;
+    // Asegura que no herede una confirmación previa del entorno de la sesión.
+    delete env.RESET_DB_CONFIRMACION;
 
     try {
       execSync("node ./scripts/reset-db-pruebas.cjs", {
