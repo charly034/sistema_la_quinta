@@ -3,7 +3,6 @@ import {
   createPedido,
   getPedidoById,
   getPedidos,
-  setupPedidosTable,
   updatePedidoEstado,
 } from "./pedidos.controller.js";
 import { validate } from "../../middlewares/validate.middleware.js";
@@ -31,6 +30,5 @@ router.put(
   validate({ params: pedidoParamsSchema, body: updatePedidoEstadoBodySchema }),
   updatePedidoEstado,
 );
-router.post("/setup", setupPedidosTable);
 
 export default router;

@@ -6,16 +6,33 @@
     "dev": "nodemon --watch . --ext js,env --exec node index.js",
     "start": "node index.js",
     "start:prod": "node index.js",
-    "build": "node -e \"console.log('API does not require a build step')\""
+    "build": "node -e \"console.log('API does not require a build step')\"",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand",
+    "migrar:subir": "node-pg-migrate up --config-file ./migrations.config.cjs",
+    "migrar:bajar": "node-pg-migrate down --config-file ./migrations.config.cjs",
+    "migrar:crear": "node-pg-migrate create --config-file ./migrations.config.cjs",
+    "migrar:estado": "node-pg-migrate status --config-file ./migrations.config.cjs",
+    "crear:propietario": "node ./scripts/crear-propietario.js",
+    "limpiar:sesiones-vencidas": "node ./scripts/limpiar-sesiones-vencidas.js",
+    "inicializar:datos": "node ./scripts/inicializar-datos.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.0.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "jest": "^30.0.5",
+    "node-pg-migrate": "^7.9.1",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
   }
 }

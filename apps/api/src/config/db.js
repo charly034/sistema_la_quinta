@@ -4,35 +4,50 @@ const { Pool } = pkg;
 
 let pool = null;
 
-function isTruthyEnv(v) {
-  return !!v && ["1", "true", "yes", "on"].includes(String(v).toLowerCase());
+function esValorVerdadero(valor) {
+  return (
+    !!valor && ["1", "true", "yes", "on"].includes(String(valor).toLowerCase())
+  );
 }
 
-function isLocalHost(h) {
-  if (!h) return false;
-  return ["localhost", "127.0.0.1"].includes(String(h).toLowerCase());
+function esHostLocal(host) {
+  if (!host) return false;
+  return ["localhost", "127.0.0.1"].includes(String(host).toLowerCase());
 }
 
-export function createDbConfig() {
-  const forceLocal = isTruthyEnv(process.env.DB_FORCE_LOCAL);
-  const forceRemote = isTruthyEnv(process.env.DB_FORCE_REMOTE);
-  const hasDatabaseUrl = !!process.env.DATABASE_URL;
-  const hasHost = !!process.env.DB_HOST;
-  const detectedRemote =
-    hasDatabaseUrl || (hasHost && !isLocalHost(process.env.DB_HOST));
-  const isDev = (process.env.NODE_ENV || "").toLowerCase() === "development";
-  const useRemote = forceRemote || (!forceLocal && isDev && detectedRemote);
+export function crearConfiguracionDb() {
+  const databaseUrlPruebas = process.env.DATABASE_URL_PRUEBAS || "";
+  const databaseUrl = databaseUrlPruebas || process.env.DATABASE_URL || "";
+  const forzarLocal = esValorVerdadero(process.env.DB_FORCE_LOCAL);
+  const forzarRemota = esValorVerdadero(process.env.DB_FORCE_REMOTE);
+  const tieneDatabaseUrl = !!databaseUrl;
+  const tieneHost = !!process.env.DB_HOST;
+  const detectadoRemoto =
+    tieneDatabaseUrl || (tieneHost && !esHostLocal(process.env.DB_HOST));
+  const esDesarrollo =
+    (process.env.NODE_ENV || "").toLowerCase() === "development";
+  const usarRemota =
+    forzarRemota || (!forzarLocal && esDesarrollo && detectadoRemoto);
 
   const dbSslEnv = (process.env.DB_SSL || "").toString().toLowerCase();
-  const defaultSsl = !!(hasDatabaseUrl && !isLocalHost(process.env.DB_HOST));
-  const useSsl = dbSslEnv
+  let hostDesdeUrl = "";
+  if (databaseUrl) {
+    try {
+      hostDesdeUrl = new URL(databaseUrl).hostname;
+    } catch {
+      hostDesdeUrl = "";
+    }
+  }
+
+  const sslPorDefecto = !!(tieneDatabaseUrl && !esHostLocal(hostDesdeUrl));
+  const usarSsl = dbSslEnv
     ? ["1", "true", "yes", "on"].includes(dbSslEnv)
-    : defaultSsl;
+    : sslPorDefecto;
 
   return {
-    useRemote,
+    usarRemota,
     config: {
-      connectionString: process.env.DATABASE_URL || undefined,
+      connectionString: databaseUrl || undefined,
       host: process.env.DB_HOST || "localhost",
       port: Number(process.env.DB_PORT) || 5432,
       database: process.env.DB_NAME,
@@ -40,16 +55,16 @@ export function createDbConfig() {
       password: process.env.DB_PASSWORD
         ? String(process.env.DB_PASSWORD)
         : undefined,
-      ssl: useSsl ? { rejectUnauthorized: false } : false,
+      ssl: usarSsl ? { rejectUnauthorized: false } : false,
     },
   };
 }
 
 export async function initDb() {
-  const { useRemote, config } = createDbConfig();
+  const { usarRemota, config } = crearConfiguracionDb();
 
   console.log(
-    useRemote
+    usarRemota
       ? "ℹ️  Usando DB remota (development o forzado)"
       : "ℹ️  Priorizando DB local (modo producción por defecto)",
   );
@@ -63,23 +78,23 @@ export async function initDb() {
     ssl: !!config.ssl,
   });
 
-  const candidate = new Pool(config);
+  const candidata = new Pool(config);
 
   try {
-    await candidate.query("SELECT 1");
+    await candidata.query("SELECT 1");
     console.log(
-      useRemote ? "✅ DB conectada (remota)" : "✅ DB conectada (local)",
+      usarRemota ? "✅ DB conectada (remota)" : "✅ DB conectada (local)",
     );
-    pool = candidate;
-  } catch (err) {
-    logDbError("DB conexión inicial", err);
+    pool = candidata;
+  } catch (error) {
+    logDbError("DB conexión inicial", error);
     console.log(
       "⚠️  Error conectando a la DB — deshabilitando endpoints de DB",
     );
     try {
-      await candidate.end();
+      await candidata.end();
     } catch {
-      // ignore
+      // ignorar
     }
     pool = null;
   }
@@ -97,14 +112,37 @@ export async function closeDb() {
   pool = null;
 }
 
-export function logDbError(context, e) {
+export async function ejecutarEnTransaccion(callback) {
+  if (!pool) {
+    throw new Error("Pool de base de datos no inicializado");
+  }
+
+  const cliente = await pool.connect();
+  try {
+    await cliente.query("BEGIN");
+    const resultado = await callback(cliente);
+    await cliente.query("COMMIT");
+    return resultado;
+  } catch (error) {
+    try {
+      await cliente.query("ROLLBACK");
+    } catch {
+      // ignorar
+    }
+    throw error;
+  } finally {
+    cliente.release();
+  }
+}
+
+export function logDbError(contexto, error) {
   const info = {
-    message: e?.message,
-    code: e?.code,
-    detail: e?.detail,
-    hint: e?.hint,
-    where: e?.where,
+    message: error?.message,
+    code: error?.code,
+    detail: error?.detail,
+    hint: error?.hint,
+    where: error?.where,
   };
-  console.error(`${context} error:`, info);
+  console.error(`${contexto} error:`, info);
   return info;
 }

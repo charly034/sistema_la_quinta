@@ -113,30 +113,3 @@ export async function updatePedidoEstado(req, res) {
     sendServerError(res, "Error al actualizar estado del pedido");
   }
 }
-
-export async function setupPedidosTable(_req, res) {
-  try {
-    const pool = getPool();
-    if (!ensurePool(res, pool)) return;
-
-    const q = `
-      CREATE TABLE IF NOT EXISTS pedidos (
-        id TEXT PRIMARY KEY,
-        fecha DATE NOT NULL,
-        hora TIME NOT NULL,
-        telefono TEXT NOT NULL,
-        nombre TEXT NOT NULL,
-        direccion TEXT,
-        modalidad TEXT NOT NULL,
-        productos TEXT NOT NULL,
-        estado TEXT
-      );
-    `;
-
-    await pool.query(q);
-    res.json({ ok: true });
-  } catch (e) {
-    logDbError("POST /setup", e);
-    res.status(500).json({ ok: false, error: e?.message });
-  }
-}

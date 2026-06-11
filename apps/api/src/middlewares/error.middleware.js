@@ -14,6 +14,28 @@ export function errorHandler(err, _req, res, next) {
   }
 
   const statusCode = err?.statusCode || 500;
+
+  if (err?.formatoNuevo) {
+    const payload = {
+      exito: false,
+      error: {
+        codigo: err.codigo || "ERROR_INTERNO",
+        mensaje: statusCode >= 500 ? "Error interno" : err?.message || "Error",
+        detalles: Array.isArray(err.detalles) ? err.detalles : [],
+      },
+    };
+
+    if (statusCode >= 500) {
+      console.error("Unhandled error:", {
+        message: err?.message,
+        codigo: err?.codigo,
+        stack: err?.stack,
+      });
+    }
+
+    return res.status(statusCode).json(payload);
+  }
+
   const payload = {
     ok: false,
     error: statusCode >= 500 ? "Error interno" : err?.message || "Error",

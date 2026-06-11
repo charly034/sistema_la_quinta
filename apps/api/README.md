@@ -1,198 +1,113 @@
 # La Quinta - API
 
-Pequeña API Express con conexión a PostgreSQL. Soporta conexión local y remota y detecta automáticamente el modo.
+API Express modular con PostgreSQL, autenticación JWT, refresh tokens opacos con hash, CORS por allowlist, Swagger y migraciones con `node-pg-migrate`.
 
-Ahora la API está modularizada por dominios para que puedas agregar funcionalidades nuevas sin mezclar todo en un solo archivo.
+## Estado actual
 
-**Estructura actual**
+- La base de versionado es `/api/v1`.
+- Swagger UI está disponible en `/api/v1/documentacion`.
+- El endpoint `/api/v1/pedidos/setup` ya no existe.
+- Los endpoints nuevos están protegidos explícitamente.
+- Los endpoints legacy de pedidos siguen montados por compatibilidad.
 
-```text
-.
-├── index.js
-├── src
-│   ├── app.js
-│   ├── config
-│   │   └── db.js
-│   ├── middlewares
-│   │   ├── error.middleware.js
-│   │   └── validate.middleware.js
-│   ├── routes
-│   │   └── index.js
-│   ├── utils
-│   │   ├── api-error.js
-│   │   └── http.js
-│   └── modules
-│       ├── pedidos
-│       │   ├── pedidos.controller.js
-│       │   ├── pedidos.routes.js
-│       │   └── pedidos.schemas.js
-│       └── system
-│           └── system.routes.js
-└── README.md
-```
+## Requisitos
 
-**Qué hace cada capa**
+- Node.js 22 o superior.
+- PostgreSQL para migraciones y ejecución real.
+- Variables de entorno locales o una `DATABASE_URL` de pruebas.
 
-- `index.js`: arranque del servidor y shutdown ordenado.
-- `src/app.js`: instancia Express + middlewares globales.
-- `src/config/db.js`: inicialización, config y cierre de PostgreSQL.
-- `src/middlewares/error.middleware.js`: 404 + manejo global de errores.
-- `src/middlewares/validate.middleware.js`: validación de requests con Zod.
-- `src/routes/index.js`: agrega todos los routers de módulos.
-- `src/modules/<modulo>/`: rutas y controladores por dominio.
-- `src/utils/`: utilidades compartidas (errores HTTP, helpers, etc.).
+## Variables de entorno
 
-**Requisitos**
+Usar `apps/api/.env.example` como plantilla. Variables principales:
 
-- Node.js 18+ (probado con Node 22)
-- PostgreSQL (local o remoto)
+- `NODE_ENV`
+- `PORT`
+- `DATABASE_URL` o `DB_HOST` / `DB_PORT` / `DB_NAME` / `DB_USER` / `DB_PASSWORD`
+- `DB_SSL`
+- `CORS_ORIGENES_PERMITIDOS`
+- `JWT_SECRETO_ACCESO`
+- `JWT_DURACION_ACCESO`
+- `DURACION_REFRESH_TOKEN`
+- `COSTO_HASH_CONTRASENA`
+- `RATE_LIMIT_AUTENTICACION_VENTANA_MS`
+- `RATE_LIMIT_AUTENTICACION_MAXIMO`
+- `AUDITORIA_HABILITADA`
 
-**Instalación**
+## Scripts
+
+Desde `apps/api`:
 
 ```bash
-npm install
+npm run dev
+npm start
+npm test
+npm run migrar:subir
+npm run migrar:bajar
+npm run migrar:estado
+npm run migrar:crear
+npm run inicializar:datos
+npm run crear:propietario
+npm run limpiar:sesiones-vencidas
 ```
 
-**Scripts**
+## Migraciones
 
-- `npm run dev` — arranca con `nodemon` (recomendado durante desarrollo)
-- `npm start` — arranca con `node index.js`
+Las migraciones están en `apps/api/migrations/`.
 
-**Cómo agregar un módulo nuevo (ejemplo: clientes)**
+Datos aprobados para esta etapa:
 
-1. Crear carpeta `src/modules/clientes`.
-2. Crear `clientes.controller.js` con la lógica de negocio.
-3. Crear `clientes.routes.js` con endpoints (`Router`).
-4. Registrar el router en `src/routes/index.js`.
+- Marca `LA_QUINTA`.
+- Canales `LOCAL`, `EMPRESAS`, `UNIVERSIDAD` y `VENTA_ONLINE`.
+- Opciones `A` y `C` para la marca La Quinta.
+- Roles y permisos estructurales.
 
-Ejemplo mínimo:
+No se crea una empresa de ejemplo en esta etapa.
 
-```js
-// src/modules/clientes/clientes.routes.js
-import { Router } from "express";
+## Endpoints principales
 
-const router = Router();
+- `GET /` y `GET /health`: healthchecks.
+- `GET /api/v1/documentacion`: Swagger UI.
+- `POST /api/v1/autenticacion/iniciar-sesion`
+- `POST /api/v1/autenticacion/renovar-sesion`
+- `POST /api/v1/autenticacion/cerrar-sesion`
+- `POST /api/v1/autenticacion/cambiar-contrasena`
+- `GET /api/v1/autenticacion/mi-perfil`
+- `GET|POST|PATCH|PUT /api/v1/usuarios...`
+- `GET|POST|PATCH|PUT /api/v1/roles...`
+- `GET /api/v1/permisos`
+- `GET /api/v1/auditoria`
+- `GET|POST|PATCH /api/v1/marcas...`
+- `GET|POST|PATCH /api/v1/canales...`
+- `GET|POST|PATCH /api/v1/empresas...`
+- `GET|POST|PATCH|PUT /api/v1/menu/opciones...`
+- `GET|POST|PUT /api/v1/pedidos...` legacy
 
-router.get("/clientes", (_req, res) => {
-  res.json({ ok: true, data: [] });
-});
+## Seguridad
 
-export default router;
-```
+- `helmet` activo.
+- CORS restringido por lista de orígenes.
+- Rate limiting solo en autenticación.
+- Access tokens JWT de corta duración.
+- Refresh tokens opacos con hash y rotación.
 
-```js
-// src/routes/index.js
-import { Router } from "express";
-import pedidosRoutes from "../modules/pedidos/pedidos.routes.js";
-import systemRoutes from "../modules/system/system.routes.js";
-import clientesRoutes from "../modules/clientes/clientes.routes.js";
+## Pruebas
 
-const router = Router();
-router.use(systemRoutes);
-router.use(pedidosRoutes);
-router.use(clientesRoutes);
+Pruebas reales agregadas en:
 
-export default router;
-```
+- `src/utils/seguridad.test.js`
+- `src/utils/transacciones.test.js`
+- `src/config/cors.test.js`
+- `src/modules/autenticacion/autenticacion.utilidades.test.js`
+- `src/modules/auditoria/auditoria.utilidades.test.js`
+- `src/middlewares/autenticacion.middleware.test.js`
 
-**Variables de entorno**
+Resultado verificado:
 
-La app carga `.env` (usa `dotenv`). Variables principales:
+- `npm test` ejecuta 18 pruebas y pasa.
 
-- `DATABASE_URL` — URL completa de conexión PostgreSQL. (Ej: `postgres://user:pass@host:5432/dbname?sslmode=require`)
-- `DB_HOST` — host de la BD (ej `localhost` o `mi-host.com`)
-- `DB_PORT` — puerto (por defecto `5432`)
-- `DB_NAME` — nombre de la base de datos
-- `DB_USER` — usuario
-- `DB_PASSWORD` — contraseña
-- `DB_SSL` — forzar SSL (`1`, `true`, `yes`) o `false` para desactivar
-- `DB_FORCE_LOCAL` — si `1` fuerza usar la configuración local
-- `DB_FORCE_REMOTE` — si `1` fuerza usar la configuración remota
-- `NODE_ENV` — `development` o `production`. Por defecto la app prioriza local; la remota se usa automáticamente sólo si `NODE_ENV=development` (a menos que se fuerce)
-- `PORT` — puerto de la app (por defecto `3000`)
+Las pruebas de integración contra PostgreSQL de pruebas siguen pendientes porque en esta sesión no hubo una base descartable disponible.
 
-Ejemplo mínimo de `.env`:
+## Notas operativas
 
-```dotenv
-# Conexion por DATABASE_URL (remota)
-DATABASE_URL=postgres://usuario:password@193.203.174.156:5432/laquinta_DB?sslmode=disable
-
-# O configuración por partes (local)
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=laquinta_DB
-DB_USER=usuario_local
-DB_PASSWORD=pass_local
-DB_SSL=false
-
-PORT=3000
-```
-
-**Comportamiento de detección local vs remota**
-
-- La app prioriza la BD local en entornos no `development` (producción) para evitar usar la remota accidentalmente.
-- Si `NODE_ENV=development` y existe `DATABASE_URL` o un `DB_HOST` que no sea `localhost`/`127.0.0.1`, la app usará la remota.
-- Podés forzar comportamiento con `DB_FORCE_LOCAL=1` o `DB_FORCE_REMOTE=1`.
-- SSL se detecta desde `DB_SSL` o desde la presencia de `DATABASE_URL`/host remoto; también puede forzarse con `DB_SSL=1`.
-
-**Versionado de API**
-
-- Base de API: `/api/v1`
-- Healthchecks de infraestructura: `/` y `/health` (sin versionar)
-
-**Endpoints**
-
-- GET `/` — health simple (200 OK)
-- GET `/health` — `{ ok: true }`
-- GET `/api/v1/db` — prueba rápida a la BD, devuelve `{ ok: true, db: 1 }` si funciona
-- GET `/api/v1/pedidos` — obtiene los últimos 100 pedidos
-- POST `/api/v1/pedidos` — crea un pedido
-- GET `/api/v1/pedidos/:id` — obtiene pedido por id
-- PUT `/api/v1/pedidos/:id/estado` — actualiza el estado de un pedido
-- POST `/api/v1/setup` — crea la tabla `pedidos` si no existe (útil para debug)
-
-**Validaciones con Zod (pedidos)**
-
-- `POST /api/v1/pedidos` valida body (id, fecha `DD/MM/YYYY`, hora `HH:mm` o `HH:mm:ss`, telefono, nombre, modalidad, productos).
-- `GET /api/v1/pedidos/:id` valida `:id`.
-- `PUT /api/v1/pedidos/:id/estado` valida `:id` y `estado`.
-- Si falla la validación, responde `400` con `code: "VALIDATION_ERROR"` y detalle de campos.
-
-**Comandos de prueba**
-
-PowerShell:
-
-```powershell
-# Probar health
-wget -UseBasicParsing -Uri http://localhost:3000/
-
-# Probar /db
-wget -UseBasicParsing -Uri http://localhost:3000/db -OutFile -
-```
-
-Linux/macOS (curl):
-
-```bash
-curl http://localhost:3000/db
-```
-
-**Notas y troubleshooting**
-
-- Asegurate de que el `.env` esté presente y con las credenciales correctas.
-- Si la app falla por `Cannot find package 'dotenv'`, ejecuta `npm i dotenv`.
-- Si quieres ver si la app está usando la BD local o remota, revisa los logs al arrancar; el arranque informa `Priorizando DB local` o `Usando DB remota` y muestra la configuración (sin password).
-- Para forzar reconexiones o reintentos automáticos, se puede mejorar el código adicionando lógica de reintento/expBackoff (no incluido por defecto).
-
-**Contribuir / Cambios**
-
-Si querés que agregue:
-
-- Endpoint que devuelva explícitamente `mode: "local"|"remote"`.
-- Reintentos automáticos de conexión.
-- Tests unitarios o integración.
-
-Abrí un issue o pedime que lo implemente y lo agrego.
-
----
-
-Archivo principal: [index.js](index.js)
+- `npm audit` todavía reporta vulnerabilidades en dependencias de desarrollo/CLI.
+- No usar `npm audit fix --force` sin revisar compatibilidad.
