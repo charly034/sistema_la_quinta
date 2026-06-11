@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { ejecutarEnTransaccion } from "../../../utils/transacciones.js";
 import { crearAuditoria } from "../../autenticacion/autenticacion.repositorio.js";
 import { generarIdentificador } from "../../../utils/seguridad.js";

@@ -45,10 +45,29 @@ npm run migrar:subir
 npm run migrar:bajar
 npm run migrar:estado
 npm run migrar:crear
+npm run reset:db:pruebas
 npm run inicializar:datos
 npm run crear:propietario
 npm run limpiar:sesiones-vencidas
 ```
+
+Reset oficial de base de pruebas:
+
+- Script: `scripts/reset-db-pruebas.cjs`
+- Usa exclusivamente `DATABASE_URL_PRUEBAS`
+- Requiere confirmación explícita: `RESET_DB_CONFIRMACION=RESET_DB_PRUEBAS`
+- Bloquea hosts/bases con patrón productivo y falla en modo seguro si falta configuración
+
+## Importación de menús
+
+No hay un CLI dedicado para importar menús en esta etapa. La importación oficial se ejecuta contra la API autenticada:
+
+- `POST /api/v1/menus-semanales/importar`
+- Requiere el permiso `MENUS_IMPORTAR`
+- Acepta el JSON validado por `importarJSONSchema`
+- Tiene alias legado compatible en `/api/v1/menus-semanales/importar`
+
+La importación soporta `modoSimulacion` para dry-run y `estrategiaConflicto` para controlar la resolución de choques.
 
 ## Migraciones
 

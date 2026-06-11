@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { obtenerConfiguracionAplicacion } from "../../config/entorno.js";
 import { ejecutarEnTransaccion } from "../../utils/transacciones.js";
 import {

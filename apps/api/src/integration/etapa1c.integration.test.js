@@ -39,6 +39,7 @@ function ejecutarComando(comando) {
       ...process.env,
       DATABASE_URL_PRUEBAS: process.env.DATABASE_URL_PRUEBAS,
       JWT_SECRETO_ACCESO: process.env.JWT_SECRETO_ACCESO,
+      RESET_DB_CONFIRMACION: "RESET_DB_PRUEBAS",
     },
   });
 }
@@ -75,7 +76,7 @@ describe("Etapa 1C integración real", () => {
     const appModule = await import("../app.js");
     createApp = appModule.createApp;
 
-    ejecutarComando("node ./scripts/reset-db-etapa1c.cjs");
+    ejecutarComando("node ./scripts/reset-db-pruebas.cjs");
     ejecutarComando("npm run migrar:subir");
 
     process.env.CORREO_PROPETARIO = "propietario.pruebas@laquinta.local";

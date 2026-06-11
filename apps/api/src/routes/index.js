@@ -10,6 +10,7 @@ import canalesRoutes from "../modules/canales/canales.rutas.js";
 import empresasRoutes from "../modules/empresas/empresas.rutas.js";
 import opcionesMenuRoutes from "../modules/menu/opciones-menu/opciones-menu.rutas.js";
 import platosRoutes from "../modules/menu/platos/platos.rutas.js";
+import menusSemanalesRoutes from "../modules/menu/menus-semanales/menus-semanales.rutas.js";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use(canalesRoutes);
 router.use(empresasRoutes);
 router.use(opcionesMenuRoutes);
 router.use(platosRoutes);
+router.use(menusSemanalesRoutes);
 
 export default router;
