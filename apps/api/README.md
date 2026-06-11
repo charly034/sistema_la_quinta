@@ -25,7 +25,7 @@ Usar `apps/api/.env.example` como plantilla. Variables principales:
 - `DATABASE_URL` o `DB_HOST` / `DB_PORT` / `DB_NAME` / `DB_USER` / `DB_PASSWORD`
 - `DB_SSL`
 - `CORS_ORIGENES_PERMITIDOS`
-- `JWT_SECRETO_ACCESO`
+- `JWT_SECRETO_ACCESO` (obligatoria en runtime)
 - `JWT_DURACION_ACCESO`
 - `DURACION_REFRESH_TOKEN`
 - `COSTO_HASH_CONTRASENA`
@@ -54,6 +54,8 @@ npm run limpiar:sesiones-vencidas
 
 Las migraciones están en `apps/api/migrations/`.
 
+La tabla oficial de control de migraciones es `pgmigrations`.
+
 Datos aprobados para esta etapa:
 
 - Marca `LA_QUINTA`.
@@ -80,6 +82,13 @@ No se crea una empresa de ejemplo en esta etapa.
 - `GET|POST|PATCH /api/v1/canales...`
 - `GET|POST|PATCH /api/v1/empresas...`
 - `GET|POST|PATCH|PUT /api/v1/menu/opciones...`
+- `GET|POST|PATCH|PUT /api/v1/menu/platos...`
+- `GET|POST|PATCH /api/v1/menu/categorias...`
+- `GET|POST|PATCH /api/v1/menu/proteinas...`
+- `GET|POST|PATCH /api/v1/menu/etiquetas...`
+- `GET|POST|PATCH /api/v1/menu/ingredientes...`
+- `GET|POST|PATCH /api/v1/menu/alergenos...`
+- `GET|POST|PATCH /api/v1/menu/caracteristicas-alimentarias...`
 - `GET|POST|PUT /api/v1/pedidos...` legacy
 
 ## Seguridad
