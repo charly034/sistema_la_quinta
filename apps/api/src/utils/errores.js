@@ -57,3 +57,23 @@ export function errorUsuarioDesactivado(mensaje = "Usuario desactivado") {
 export function errorConflictoIntegridad(mensaje = "Conflicto de integridad") {
   return new ErrorAplicacion(409, "CONFLICTO_INTEGRIDAD", mensaje);
 }
+
+export function errorPlatoDuplicado(mensaje = "Plato duplicado") {
+  return new ErrorAplicacion(409, "PLATO_DUPLICADO", mensaje);
+}
+
+export function errorCicloComponentes(mensaje = "Ciclo en componentes") {
+  return new ErrorAplicacion(409, "CICLO_COMPONENTES", mensaje);
+}
+
+export function errorAliasDuplicado(mensaje = "Alias duplicado") {
+  return new ErrorAplicacion(409, "ALIAS_DUPLICADO", mensaje);
+}
+
+export function errorClasificacionInvalida(mensaje = "Clasificacion invalida") {
+  return new ErrorAplicacion(409, "CLASIFICACION_INVALIDA", mensaje);
+}
+
+export function errorComponenteInvalido(mensaje = "Componente invalido") {
+  return new ErrorAplicacion(409, "COMPONENTE_INVALIDO", mensaje);
+}

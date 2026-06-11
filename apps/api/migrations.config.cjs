@@ -21,7 +21,8 @@ const config = {
       ? { rejectUnauthorized: false }
       : undefined,
   dir: path.join(__dirname, "migrations"),
-  migrationsTable: "migraciones",
+  // Tabla oficial ya existente en el entorno de pruebas.
+  migrationsTable: "pgmigrations",
 };
 
 module.exports = config;

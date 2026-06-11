@@ -11,7 +11,7 @@
     "migrar:subir": "node-pg-migrate up --config-file ./migrations.config.cjs",
     "migrar:bajar": "node-pg-migrate down --config-file ./migrations.config.cjs",
     "migrar:crear": "node-pg-migrate create --config-file ./migrations.config.cjs",
-    "migrar:estado": "node-pg-migrate status --config-file ./migrations.config.cjs",
+    "migrar:estado": "node-pg-migrate up --dry-run --config-file ./migrations.config.cjs",
     "crear:propietario": "node ./scripts/crear-propietario.js",
     "limpiar:sesiones-vencidas": "node ./scripts/limpiar-sesiones-vencidas.js",
     "inicializar:datos": "node ./scripts/inicializar-datos.js"

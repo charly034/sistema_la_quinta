@@ -1,9 +1,16 @@
 import "dotenv/config";
 import { createApp } from "./src/app.js";
 import { closeDb, initDb } from "./src/config/db.js";
+import {
+  obtenerConfiguracionAplicacion,
+  validarConfiguracionCritica,
+} from "./src/config/entorno.js";
 
 const app = createApp();
 const PORT = Number(process.env.PORT) || 3000;
+
+const configuracion = obtenerConfiguracionAplicacion();
+validarConfiguracionCritica(configuracion);
 
 await initDb();
 

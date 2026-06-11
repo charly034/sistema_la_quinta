@@ -28,3 +28,16 @@ export function obtenerConfiguracionAplicacion() {
       "false",
   };
 }
+
+export function validarConfiguracionCritica(configuracion) {
+  const faltantes = [];
+
+  if (!configuracion?.secretoAccessToken) {
+    faltantes.push("JWT_SECRETO_ACCESO");
+  }
+
+  if (faltantes.length) {
+    const detalle = faltantes.join(", ");
+    throw new Error(`Variables obligatorias no configuradas: ${detalle}`);
+  }
+}
