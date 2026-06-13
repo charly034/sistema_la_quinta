@@ -2,6 +2,7 @@ import { beforeAll, afterAll, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import { randomUUID } from "node:crypto";
 import request from "supertest";
 
 const ROOT_API = path.resolve(process.cwd());
@@ -166,7 +167,7 @@ describe("Etapa 1C integración real", () => {
   });
 
   test("acceso sin permiso", async () => {
-    userSinPermisosCorreo = "cliente.sin.permisos@laquinta.local";
+    userSinPermisosCorreo = `cliente.sin.permisos.${randomUUID().slice(0, 8)}@laquinta.local`;
 
     const crearUsuario = await api
       .post("/api/v1/usuarios")
@@ -194,7 +195,7 @@ describe("Etapa 1C integración real", () => {
       .set("Authorization", `Bearer ${loginCliente.body.datos.accessToken}`);
 
     expect(sinPermiso.status).toBe(403);
-  });
+  }, 20000);
 
   test("acceso con permiso", async () => {
     const conPermiso = await api

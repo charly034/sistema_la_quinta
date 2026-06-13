@@ -38,13 +38,13 @@ export default function PlatosPage() {
   });
 
   const form = useForm({
-    defaultValues: { marcaId: "", tipo: "PRINCIPAL", nombre: "" },
+    defaultValues: { marcaId: "", tipo: "PREPARACION", nombre: "" },
   });
 
   const crearM = useMutation({
     mutationFn: crearPlato,
     onSuccess: () => {
-      form.reset({ marcaId: "", tipo: "PRINCIPAL", nombre: "" });
+      form.reset({ marcaId: "", tipo: "PREPARACION", nombre: "" });
       queryClient.invalidateQueries({ queryKey: ["platos"] });
     },
   });
@@ -77,11 +77,10 @@ export default function PlatosPage() {
             placeholder="Marca ID"
             {...form.register("marcaId", { required: true })}
           />
-          <select {...form.register("tipo")}>
-            <option value="PRINCIPAL">PRINCIPAL</option>
+          <select data-testid="tipo-plato" {...form.register("tipo")}>
+            <option value="PREPARACION">PREPARACION</option>
             <option value="GUARNICION">GUARNICION</option>
-            <option value="POSTRE">POSTRE</option>
-            <option value="ENSALADA">ENSALADA</option>
+            <option value="PLATO_COMPLETO">PLATO_COMPLETO</option>
           </select>
           <input
             placeholder="Nombre"

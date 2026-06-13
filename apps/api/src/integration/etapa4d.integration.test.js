@@ -936,7 +936,8 @@ describe("Etapa 4D - Validación funcional final", () => {
     await publicarSemana(h2.semanaId, h2.versionId);
 
     const objetivoLunes = addDaysIso(h2Lunes, 14);
-    const mesObjetivo = Number(objetivoLunes.slice(5, 7));
+    const fechaObjetivoTemporada = addDaysIso(objetivoLunes, 1);
+    const mesObjetivo = Number(fechaObjetivoTemporada.slice(5, 7));
     // mesFueraTemporada debe ser distinto al mes de la semana objetivo;
     // si el objetivo es diciembre (12) usamos noviembre (11), si no, mes+1.
     const mesFueraTemporada = mesObjetivo === 12 ? 11 : mesObjetivo + 1;
@@ -955,7 +956,6 @@ describe("Etapa 4D - Validación funcional final", () => {
     {
       const { evaluarObligatoriasParaCandidato } =
         await import("../modules/menu/propuestas/evaluador-reglas.servicio.js");
-      const fechaObjStr = addDaysIso(objetivoLunes, 1);
       const reglaTemporada = {
         id: "rt",
         codigo: "RESPETAR_TEMPORADA",
@@ -970,7 +970,7 @@ describe("Etapa 4D - Validación funcional final", () => {
         conteosCategorias: new Map(),
         conteosProteinas: new Map(),
         metricas: { usos_totales: 0, usos_mismo_dia: 0, ultima_fecha: null },
-        fechaObjetivo: fechaObjStr,
+        fechaObjetivo: fechaObjetivoTemporada,
       };
 
       // Plato en temporada: debe ser elegible (cumplida = true)

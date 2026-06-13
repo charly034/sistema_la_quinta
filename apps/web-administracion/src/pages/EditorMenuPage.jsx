@@ -46,7 +46,13 @@ export default function EditorMenuPage() {
   });
 
   const generarM = useMutation({
-    mutationFn: () => generarPropuestas(semanaId, versionId, {}),
+    mutationFn: () =>
+      generarPropuestas(semanaId, versionId, {
+        generar_perfiles_iniciales: true,
+        respetar_platos_existentes: false,
+        solo_posiciones_vacias: false,
+        variar_resultados: false,
+      }),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["propuestas", semanaId, versionId],
@@ -112,6 +118,20 @@ export default function EditorMenuPage() {
           />
         </div>
       </header>
+
+      {generarM.error ? (
+        <MensajeError
+          error={generarM.error}
+          titulo="No se pudieron generar propuestas"
+        />
+      ) : null}
+
+      {aplicarM.error ? (
+        <MensajeError
+          error={aplicarM.error}
+          titulo="No se pudo aplicar la propuesta"
+        />
+      ) : null}
 
       <div
         className="matriz-semanal"

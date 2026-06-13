@@ -1,17 +1,17 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { describe, expect, it } from "vitest";
 import { obtenerNombreDescarga } from "../../src/utils/archivos.js";
 
-test("usa filename utf8", () => {
-  const headers = {
-    "content-disposition": "attachment; filename*=UTF-8''menu%20semana.xlsx",
-  };
-  assert.equal(
-    obtenerNombreDescarga(headers, "fallback.xlsx"),
-    "menu semana.xlsx",
-  );
-});
+describe("archivos", () => {
+  it("usa filename utf8", () => {
+    const headers = {
+      "content-disposition": "attachment; filename*=UTF-8''menu%20semana.xlsx",
+    };
+    expect(obtenerNombreDescarga(headers, "fallback.xlsx")).toBe(
+      "menu semana.xlsx",
+    );
+  });
 
-test("usa fallback seguro", () => {
-  assert.equal(obtenerNombreDescarga({}, "fallback.xlsx"), "fallback.xlsx");
+  it("usa fallback seguro", () => {
+    expect(obtenerNombreDescarga({}, "fallback.xlsx")).toBe("fallback.xlsx");
+  });
 });

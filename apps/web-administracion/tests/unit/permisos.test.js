@@ -1,5 +1,4 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { describe, expect, it } from "vitest";
 import {
   tienePermiso,
   tieneAlgunoDeLosPermisos,
@@ -13,21 +12,22 @@ const usuario = {
   permisos: ["MENUS_GESTIONAR", "REGLAS_GESTIONAR", "PROPUESTAS_APLICAR"],
 };
 
-test("valida permiso simple", () => {
-  assert.equal(tienePermiso(usuario, "MENUS_GESTIONAR"), true);
-  assert.equal(tienePermiso(usuario, "MENUS_PUBLICAR"), false);
-});
+describe("permisos", () => {
+  it("valida permiso simple", () => {
+    expect(tienePermiso(usuario, "MENUS_GESTIONAR")).toBe(true);
+    expect(tienePermiso(usuario, "MENUS_PUBLICAR")).toBe(false);
+  });
 
-test("valida alguno de varios permisos", () => {
-  assert.equal(
-    tieneAlgunoDeLosPermisos(usuario, ["X", "REGLAS_GESTIONAR"]),
-    true,
-  );
-});
+  it("valida alguno de varios permisos", () => {
+    expect(tieneAlgunoDeLosPermisos(usuario, ["X", "REGLAS_GESTIONAR"])).toBe(
+      true,
+    );
+  });
 
-test("expone helpers de dominio", () => {
-  assert.equal(puedeGestionarMenus(usuario), true);
-  assert.equal(puedePublicarMenus(usuario), false);
-  assert.equal(puedeGestionarReglas(usuario), true);
-  assert.equal(puedeAplicarPropuestas(usuario), true);
+  it("expone helpers de dominio", () => {
+    expect(puedeGestionarMenus(usuario)).toBe(true);
+    expect(puedePublicarMenus(usuario)).toBe(false);
+    expect(puedeGestionarReglas(usuario)).toBe(true);
+    expect(puedeAplicarPropuestas(usuario)).toBe(true);
+  });
 });

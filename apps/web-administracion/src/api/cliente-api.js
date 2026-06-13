@@ -51,7 +51,8 @@ clienteApi.interceptors.response.use(
           "/autenticacion/renovar-sesion",
           { refreshToken },
         );
-        const payload = data?.data || data;
+        // La API devuelve {datos: {...}}; los mocks de test usan {data: {...}}
+        const payload = data?.datos ?? data?.data ?? data;
         setTokens({
           accessToken: payload?.accessToken,
           refreshToken: payload?.refreshToken,

@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5174",
     "build": "vite build",
-    "test": "node --test tests/unit/**/*.test.js",
-    "test:watch": "node --test --watch tests/unit/**/*.test.js",
-    "test:ui": "node --test tests/unit/**/*.test.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port 4174",
