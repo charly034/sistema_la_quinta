@@ -2,23 +2,25 @@
  * E2E: Editor semanal, propuestas, WhatsApp y Excel desde UI
  *
  * Evidencia:
- *   preparado_por_api  : usuario E2E, marca, opciones, platos, semana editable, reglas y perfiles
- *   ejecutado_desde_ui : abrir editor, generar propuestas, comparar, seleccionar, aplicar, copiar y descargar
+ *   preparado_por_api  : usuario E2E, marca, opciones, platos, reglas y perfiles
+ *   ejecutado_desde_ui : crear semana, abrir editor, generar propuestas, comparar, seleccionar, aplicar, copiar y descargar
  *   verificado_por_api : propuestas persistidas (incluida APLICADA) y opciones de menú actualizadas
- *
- * Operaciones no disponibles en UI actual (documentadas como NO CUMPLIDO):
- *   - Crear semana desde UI
- *   - Cambiar estado de dia desde UI
- *   - Asignar plato a dia desde UI
  */
 import { test, expect } from "@playwright/test";
 import { stat, unlink } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
-import { loginApi } from "./helpers/api.mjs";
+import { configurarSemanaEditableApi, loginApi } from "./helpers/api.mjs";
 
 const CORREO = () => process.env.E2E_USUARIO_CORREO;
 const CONTRASENA = () => process.env.E2E_USUARIO_CONTRASENA;
+
+function obtenerLunesBase(intento = 0) {
+  const base = new Date(Date.UTC(2044, 0, 4));
+  const offset = (Math.floor(Date.now() / 1000) % 260) + intento;
+  base.setUTCDate(base.getUTCDate() + offset * 7);
+  return base.toISOString().slice(0, 10);
+}
 
 function sanitizeText(value) {
   if (!value) return "";
@@ -45,28 +47,144 @@ async function loginDesdeUI(page) {
   await expect(page).toHaveURL(/\/inicio/, { timeout: 20000 });
 }
 
-async function navegarAlEditor(page) {
-  const semanaId = process.env.E2E_SEMANA_ID;
-  const versionId = process.env.E2E_VERSION_ID;
-
-  await loginDesdeUI(page);
-  // Navegar al editor usando la API de historial del navegador (SPA, sin recarga)
-  // Equivalente a un enlace directo al editor: los tokens permanecen en memoria
+async function irAlEditorSPA(page, semanaId, versionId) {
   const editorUrl = `/menus/${semanaId}/versiones/${versionId}`;
   await page.evaluate((url) => {
     window.history.pushState({}, "", url);
     window.dispatchEvent(new PopStateEvent("popstate", { state: {} }));
   }, editorUrl);
-
+  await expect(page).toHaveURL(
+    new RegExp(`/menus/${semanaId}/versiones/${versionId}`),
+    {
+      timeout: 20000,
+    },
+  );
   await expect(
-    page.getByRole("heading", { name: "Editor semanal" }),
-  ).toBeVisible({ timeout: 20000 });
+    page.getByRole("region", { name: "Editor de menú semanal" }),
+  ).toBeVisible({ timeout: 30000 });
+}
 
-  return { semanaId, versionId };
+async function crearSemanaDesdeUI(page) {
+  if (process.env.E2E_SEMANA_ID && process.env.E2E_VERSION_ID) {
+    await loginDesdeUI(page);
+    await irAlEditorSPA(
+      page,
+      process.env.E2E_SEMANA_ID,
+      process.env.E2E_VERSION_ID,
+    );
+
+    return {
+      semanaId: process.env.E2E_SEMANA_ID,
+      versionId: process.env.E2E_VERSION_ID,
+      fechaInicio: process.env.E2E_FECHA_INICIO,
+    };
+  }
+
+  await loginDesdeUI(page);
+  await page.getByRole("link", { name: "Menús semanales" }).first().click();
+  await expect(
+    page.locator("h2").filter({ hasText: "Menús semanales" }),
+  ).toBeVisible({ timeout: 15000 });
+
+  const apiUrl = `${process.env.E2E_API_URL}/api/v1`;
+  let semanaId;
+  let versionId;
+  let fechaInicio;
+
+  for (let intento = 0; intento < 10; intento += 1) {
+    fechaInicio = obtenerLunesBase(intento);
+    const respuestaCreacionPromise = page.waitForResponse(
+      (respuesta) =>
+        respuesta.request().method() === "POST" &&
+        respuesta.url().includes("/menu/semanas"),
+      { timeout: 30000 },
+    );
+
+    await page.getByRole("button", { name: "Crear semana" }).click();
+    const modal = page.getByRole("dialog");
+    await expect(modal).toBeVisible({ timeout: 10000 });
+    await modal.getByLabel("Marca").selectOption(process.env.E2E_MARCA_ID);
+    await modal.getByLabel("Fecha de inicio").fill(fechaInicio);
+    await modal.getByRole("button", { name: "Guardar semana" }).click();
+
+    const respuestaCreacion = await respuestaCreacionPromise;
+    const status = respuestaCreacion.status();
+
+    if (status === 409) {
+      await expect(
+        page.getByText(/Ya existe una semana para ese contexto y fecha/i),
+      ).toBeVisible({ timeout: 10000 });
+      continue;
+    }
+
+    expect(status).toBe(201);
+    const body = await respuestaCreacion.json();
+    const payload = body?.datos ?? body?.data ?? body;
+    semanaId = payload?.semana?.id;
+    versionId = payload?.versionInicial?.id;
+    expect(semanaId).toBeTruthy();
+    expect(versionId).toBeTruthy();
+
+    await expect(page).toHaveURL(
+      new RegExp(`/menus/${semanaId}/versiones/${versionId}`),
+      { timeout: 20000 },
+    );
+
+    // Configurar días y opciones por API mientras el editor está en pantalla.
+    // Después navegar de vuelta al editor para que cargue datos frescos.
+    const loginData = await loginApi(CORREO(), CONTRASENA());
+    await configurarSemanaEditableApi(
+      loginData.accessToken,
+      process.env.E2E_MARCA_ID,
+      {
+        A: { id: process.env.E2E_OPCIONES_A_ID },
+        C: { id: process.env.E2E_OPCIONES_C_ID },
+      },
+      {
+        platoA: { id: process.env.E2E_PLATO_A_ID },
+        platoC: { id: process.env.E2E_PLATO_C_ID },
+      },
+      { semanaId, versionId, fechaInicio },
+    );
+
+    const semanaRes = await fetchAutorizado(
+      `${apiUrl}/menu/semanas/${semanaId}`,
+      loginData.accessToken,
+    );
+    const semanaPayload =
+      semanaRes.data?.datos ?? semanaRes.data?.data ?? semanaRes.data;
+    const dias = Array.isArray(semanaPayload?.diasYOpciones)
+      ? semanaPayload.diasYOpciones
+      : [];
+    expect(dias).toHaveLength(7);
+
+    process.env.E2E_SEMANA_ID = semanaId;
+    process.env.E2E_VERSION_ID = versionId;
+    process.env.E2E_FECHA_INICIO = fechaInicio;
+    process.env._E2E_SEMANA_LIMPIAR = semanaId;
+
+    console.log("[E2E] Solicitud originada por navegador: sí");
+    console.log("[E2E] HTTP creación semana: 201");
+    console.log(`[E2E] semana_id: ${semanaId}`);
+    console.log(`[E2E] version_id: ${versionId}`);
+    console.log("[E2E] Siete días creados: sí");
+
+    // Navegar al editor con datos frescos sin recargar la app para preservar la sesión en memoria.
+    await irAlEditorSPA(page, semanaId, versionId);
+
+    return { semanaId, versionId, fechaInicio };
+  }
+
+  throw new Error("No se pudo crear una semana única desde UI");
+}
+
+async function navegarAlEditor(page) {
+  const creada = await crearSemanaDesdeUI(page);
+  return { semanaId: creada.semanaId, versionId: creada.versionId };
 }
 
 test.describe("Editor semanal — UI", () => {
-  test("Abrir editor de la semana sembrada desde lista de menus", async ({
+  test("Crear semana desde UI, redirigir al editor y usar la versión inicial", async ({
     page,
   }) => {
     const { semanaId, versionId } = await navegarAlEditor(page);

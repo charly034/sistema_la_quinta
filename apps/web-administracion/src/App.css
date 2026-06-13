@@ -368,6 +368,15 @@ button:focus {
   padding: 18px;
 }
 
+.modal-contenido--formulario {
+  width: min(640px, 92vw);
+}
+
+.modal-formulario {
+  display: grid;
+  gap: 12px;
+}
+
 .modal-acciones {
   display: flex;
   justify-content: flex-end;

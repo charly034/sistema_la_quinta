@@ -1,21 +1,21 @@
 import { describe, test, expect } from "@jest/globals";
-import fs from "fs";
-import path from "path";
 import { execSync } from "child_process";
+import {
+  API_ROOT,
+  obtenerUrlPruebas,
+  validarBasePruebas,
+} from "./utils/entorno-pruebas.js";
 
-const ROOT_API = path.resolve(process.cwd());
-const ENV_PATH = path.join(ROOT_API, ".env");
+const ROOT_API = API_ROOT;
 
 function cargarDatabaseUrlPruebas() {
-  const texto = fs.readFileSync(ENV_PATH, "utf8");
-  const match = texto.match(/^\s*DATABASE_URL_PRUEBAS\s*=\s*(.+)\s*$/m);
-  if (!match) throw new Error("DATABASE_URL_PRUEBAS no definida");
-  return match[1].trim().replace(/^['\"]|['\"]$/g, "");
+  return obtenerUrlPruebas();
 }
 
 describe("Etapa 3G - Protección script reset-db-pruebas", () => {
   test("rechaza ejecución sin confirmación explícita", () => {
     const dbUrl = cargarDatabaseUrlPruebas();
+    validarBasePruebas(dbUrl);
     const env = {
       ...process.env,
       DATABASE_URL_PRUEBAS: dbUrl,

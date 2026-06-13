@@ -4,6 +4,16 @@ function extraerDatos(raw) {
   return raw?.datos ?? raw?.data ?? raw;
 }
 
+function addDaysIso(fechaIso, days) {
+  const d = new Date(`${fechaIso}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function normalizarOpcional(valor) {
+  return valor ? valor : null;
+}
+
 export async function listarSemanas(params) {
   const { data } = await clienteApi.get("/menu/semanas", { params });
   const payload = extraerDatos(data);
@@ -14,6 +24,30 @@ export async function listarSemanas(params) {
 
 export async function obtenerSemana(id) {
   const { data } = await clienteApi.get(`/menu/semanas/${id}`);
+  const payload = extraerDatos(data);
+  const dias = payload?.diasYOpciones || [];
+  return {
+    ...payload,
+    versionActual: payload?.versionActual
+      ? { ...payload.versionActual, dias }
+      : payload?.versionActual,
+    versionPublicada: payload?.versionPublicada
+      ? { ...payload.versionPublicada, dias }
+      : payload?.versionPublicada,
+  };
+}
+
+export async function crearSemana(payload) {
+  const fechaInicio = payload?.fechaInicio;
+  const requestBody = {
+    marcaId: payload?.marcaId,
+    canalId: normalizarOpcional(payload?.canalId),
+    empresaId: normalizarOpcional(payload?.empresaId),
+    fechaInicio,
+    fechaFin: addDaysIso(fechaInicio, 6),
+  };
+
+  const { data } = await clienteApi.post("/menu/semanas", requestBody);
   return extraerDatos(data);
 }
 

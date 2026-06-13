@@ -44,6 +44,48 @@ export async function crearSemanaMenu(db, datosCreacion, usuarioId) {
     );
   }
 
+  if (datosValidados.canalId) {
+    const canal = await db.query("SELECT id FROM canales WHERE id = $1", [
+      datosValidados.canalId,
+    ]);
+    if (canal.rows.length === 0) {
+      throw new ApiError(
+        "CANAL_NO_ENCONTRADO",
+        "El canal especificado no existe",
+        404,
+      );
+    }
+  }
+
+  if (datosValidados.empresaId) {
+    const empresa = await db.query("SELECT id FROM empresas WHERE id = $1", [
+      datosValidados.empresaId,
+    ]);
+    if (empresa.rows.length === 0) {
+      throw new ApiError(
+        "EMPRESA_NO_ASOCIADA_A_MARCA",
+        "La empresa seleccionada no pertenece a la marca",
+        409,
+      );
+    }
+
+    const empresaMarca = await db.query(
+      `SELECT 1
+       FROM empresas_marcas
+       WHERE empresa_id = $1 AND marca_id = $2
+       LIMIT 1`,
+      [datosValidados.empresaId, datosValidados.marcaId],
+    );
+
+    if (empresaMarca.rows.length === 0) {
+      throw new ApiError(
+        "EMPRESA_NO_ASOCIADA_A_MARCA",
+        "La empresa seleccionada no pertenece a la marca",
+        409,
+      );
+    }
+  }
+
   // Verificar unicidad de contexto (marca + canal + empresa + fechaInicio)
   // Spec Etapa 3 - Sección 8
   const existente = await db.query(
@@ -81,7 +123,7 @@ export async function crearSemanaMenu(db, datosCreacion, usuarioId) {
       semanaId: semana.id,
       numeroVersion: 1,
       creadoPorId: usuarioId,
-      observaciones: "Versión inicial",
+      observaciones: datosValidados.observaciones || "Versión inicial",
       motivoCambio: "Creación de semana",
     });
 

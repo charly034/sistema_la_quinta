@@ -83,44 +83,13 @@ export async function crearPlatoApi(token, marcaId, nombre, codigo) {
   return body.datos || body.data || body;
 }
 
-export async function crearSemanaEditableApi(token, marcaId, opciones, platos) {
-  const FECHA_BASE = "2044-01-04"; // Lunes — primer lunes de 2044 (2044-01-01 es viernes)
-  let fechaInicio = FECHA_BASE;
-
-  let semanaId, versionId;
-  for (let intento = 0; intento < 52; intento++) {
-    const fechaFin = addDaysIso(fechaInicio, 6);
-    const res = await fetch(`${apiUrl()}/menu/semanas`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        marcaId,
-        canalId: null,
-        empresaId: null,
-        fechaInicio,
-        fechaFin,
-      }),
-    });
-    if (res.status === 201) {
-      const body = await res.json();
-      const payload = body.datos || body.data || body;
-      semanaId = payload.semana.id;
-      versionId = payload.versionInicial.id;
-      break;
-    }
-    if (res.status === 409) {
-      fechaInicio = addDaysIso(fechaInicio, 7);
-      continue;
-    }
-    const err = await res.json().catch(() => ({}));
-    throw new Error(`crearSemana: ${res.status} ${JSON.stringify(err)}`);
-  }
-  if (!semanaId)
-    throw new Error("No se pudo crear semana E2E después de 52 intentos");
-
+export async function configurarSemanaEditableApi(
+  token,
+  marcaId,
+  opciones,
+  platos,
+  { semanaId, versionId, fechaInicio },
+) {
   // Lunes = feriado
   await fetch(
     `${apiUrl()}/menu/semanas/${semanaId}/versiones/${versionId}/dias/${fechaInicio}`,

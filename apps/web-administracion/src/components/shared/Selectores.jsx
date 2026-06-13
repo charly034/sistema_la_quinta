@@ -1,3 +1,5 @@
+import React from "react";
+
 export function SelectorMarca({ marcas = [], value, onChange }) {
   return (
     <label className="campo">

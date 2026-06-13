@@ -31,6 +31,7 @@ export const crearSemanaSchema = z
       .optional(),
     fechaInicio: z.string().date("fechaInicio debe ser una fecha válida"),
     fechaFin: z.string().date("fechaFin debe ser una fecha válida"),
+    observaciones: z.string().optional().nullable(),
   })
   .strict()
   .refine((data) => esLunes(data.fechaInicio), {

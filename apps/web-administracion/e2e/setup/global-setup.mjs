@@ -14,7 +14,6 @@ import {
   obtenerMarcaLaQuinta,
   obtenerOpcionesAyC,
   crearPlatoApi,
-  crearSemanaEditableApi,
 } from "../helpers/api.mjs";
 import { validarDatabaseUrlPruebas } from "./e2e-env.mjs";
 
@@ -176,20 +175,11 @@ export default async function globalSetup() {
   }
   console.log(`[E2E] Platos de referencia creados: ${2 + platosExtras.length}`);
 
-  // --- 9. Crear semana editable (siembra, NO desde UI) ---
-  const semana = await crearSemanaEditableApi(token, marca.id, opciones, {
-    platoA,
-    platoC,
-  });
-
-  // --- 10. Guardar estado para teardown y tests ---
+  // --- 9. Guardar estado para tests; la semana principal se creará desde UI ---
   process.env.E2E_RUN_TAG = runTag;
   process.env.E2E_MARCA_ID = marca.id;
   process.env.E2E_OPCIONES_A_ID = opciones.A.id;
   process.env.E2E_OPCIONES_C_ID = opciones.C.id;
-  process.env.E2E_SEMANA_ID = semana.semanaId;
-  process.env.E2E_VERSION_ID = semana.versionId;
-  process.env.E2E_FECHA_INICIO = semana.fechaInicio;
   process.env.E2E_PLATO_A_ID = platoA.id;
   process.env.E2E_PLATO_C_ID = platoC.id;
   process.env.E2E_USUARIO_ID = usuarioId;
@@ -201,7 +191,6 @@ export default async function globalSetup() {
     ...platosExtras.map((p) => p.id),
   ];
   process.env._E2E_PLATOS_LIMPIAR = JSON.stringify(todosLosPlatos);
-  process.env._E2E_SEMANA_LIMPIAR = semana.semanaId;
   process.env._E2E_PLATOS_PREFIJO = runTag;
 
   console.log("[E2E] Siembra completada. Iniciando tests...\n");

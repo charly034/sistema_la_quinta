@@ -1,78 +1,23 @@
-import fs from "fs";
-import path from "path";
 import { execSync } from "child_process";
 import { randomUUID, createHash } from "node:crypto";
 import request from "supertest";
+import {
+  API_ROOT,
+  obtenerUrlPruebas,
+  validarBasePruebas,
+} from "./utils/entorno-pruebas.js";
 
-const ROOT_API = path.resolve(process.cwd());
-const ENV_PATH = path.join(ROOT_API, ".env");
+const ROOT_API = API_ROOT;
 
 export const E3G_PREFIX = "E3G";
 export const E3G_YEAR = 2037;
 
 export function cargarDatabaseUrlPruebas() {
-  const texto = fs.readFileSync(ENV_PATH, "utf8");
-  const match = texto.match(/^\s*DATABASE_URL_PRUEBAS\s*=\s*(.+)\s*$/m);
-  if (!match) {
-    throw new Error("DATABASE_URL_PRUEBAS no definida en apps/api/.env");
-  }
-  return match[1].trim().replace(/^['\"]|['\"]$/g, "");
-}
-
-function obtenerNombreBaseDesdeUrl(url) {
-  try {
-    const parsed = new URL(url);
-    const dbName = String(parsed.pathname || "")
-      .replace(/^\//, "")
-      .trim();
-    return {
-      dbName,
-      host: String(parsed.hostname || "").toLowerCase(),
-    };
-  } catch {
-    return { dbName: "", host: "" };
-  }
+  return obtenerUrlPruebas();
 }
 
 export function validarDatabaseUrlPruebasSegura(url) {
-  if (!url) {
-    throw new Error("DATABASE_URL_PRUEBAS es obligatoria para integraciones");
-  }
-
-  const { dbName, host } = obtenerNombreBaseDesdeUrl(url);
-  const nombreLower = String(dbName || "").toLowerCase();
-  const hostLower = String(host || "").toLowerCase();
-
-  const patronesPermitidos = ["prueba", "pruebas", "test", "testing", "qa"];
-  const nombreValido = patronesPermitidos.some((p) => nombreLower.includes(p));
-  if (!nombreValido) {
-    throw new Error(
-      "DATABASE_URL_PRUEBAS no parece base de pruebas (nombre sin prueba/test/qa)",
-    );
-  }
-
-  const patronesProduccion = [
-    "prod",
-    "production",
-    "live",
-    "primary",
-    "master",
-    "rds.amazonaws.com",
-    "azure.com",
-  ];
-  const pareceProd = patronesProduccion.some(
-    (p) => hostLower.includes(p) || nombreLower.includes(p),
-  );
-  if (pareceProd) {
-    throw new Error(
-      "DATABASE_URL_PRUEBAS rechazada por política anti-producción",
-    );
-  }
-
-  return {
-    base: dbName,
-    anti_produccion: "APROBADA",
-  };
+  return validarBasePruebas(url);
 }
 
 export function prepararEntornoPruebas(etiqueta = "etapa3g") {

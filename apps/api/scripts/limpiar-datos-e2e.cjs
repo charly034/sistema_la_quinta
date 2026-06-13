@@ -78,6 +78,9 @@ async function limpiarSemana(client, semanaId) {
 
 async function limpiarPlatos(client, platoIds) {
   for (const id of platoIds || []) {
+    await client.query("DELETE FROM opciones_dia_menu WHERE plato_id = $1", [
+      id,
+    ]);
     await client.query("DELETE FROM platos_categorias WHERE plato_id = $1", [
       id,
     ]);

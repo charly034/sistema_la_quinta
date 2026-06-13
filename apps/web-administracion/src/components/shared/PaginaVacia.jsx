@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function PaginaVacia({
   titulo = "Sin resultados",
   descripcion = "No hay datos para mostrar con los filtros actuales.",

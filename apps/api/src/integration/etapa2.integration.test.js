@@ -1,23 +1,23 @@
 import { beforeAll, afterAll, describe, expect, test } from "@jest/globals";
-import fs from "fs";
-import path from "path";
 import { execSync } from "child_process";
 import { randomUUID } from "node:crypto";
 import request from "supertest";
+import {
+  API_ROOT,
+  obtenerUrlPruebas,
+  validarBasePruebas,
+} from "./utils/entorno-pruebas.js";
 
-const ROOT_API = path.resolve(process.cwd());
-const ENV_PATH = path.join(ROOT_API, ".env");
+const ROOT_API = API_ROOT;
 
 function cargarDatabaseUrlPruebas() {
-  const texto = fs.readFileSync(ENV_PATH, "utf8");
-  const match = texto.match(/^\s*DATABASE_URL_PRUEBAS\s*=\s*(.+)\s*$/m);
-  if (!match)
-    throw new Error("DATABASE_URL_PRUEBAS no definida en apps/api/.env");
-  return match[1].trim().replace(/^['\"]|['\"]$/g, "");
+  return obtenerUrlPruebas();
 }
 
 function prepararEntornoPruebas() {
-  process.env.DATABASE_URL_PRUEBAS = cargarDatabaseUrlPruebas();
+  const dbPruebas = cargarDatabaseUrlPruebas();
+  validarBasePruebas(dbPruebas);
+  process.env.DATABASE_URL_PRUEBAS = dbPruebas;
   process.env.JWT_SECRETO_ACCESO = `etapa2b-${randomUUID()}`;
   process.env.NODE_ENV = "test";
 

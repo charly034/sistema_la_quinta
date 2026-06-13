@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function MensajeError({
   error,
   titulo = "No pudimos cargar esta vista.",
